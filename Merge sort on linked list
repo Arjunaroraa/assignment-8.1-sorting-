@@ -1,0 +1,213 @@
+
+Login
+Have you registered for Codestudio Beginner Contest 27 yet!
+New update is available. Click here to update.
+Merge Sort For Linked List
+Browse Category
+Problem of the day
+Consistent and structured practice daily can land you in 
+
+Table of Contents
+Merge Sort For Linked List
+Anchita Sharma
+Last Updated: Dec 30, 2022
+MEDIUM
+Share :
+Introduction
+Sorting in programming refers to placing the elements of a data structure in a specific and meaningful manner. Sorting is an essential part of data processing. Efficient sorting algorithms are crucial so that we can perform operations that require sorted input optimally.
+
+Whenever we search for something on Amazon or Flipkart, the search result is sorted based on filters like relevance, price, and rating. These companies deal with enormous data sets, so it becomes crucial to use a sorting algorithm that can provide results lightning-fast and provide users a hassle-free experience.
+
+Due to its importance in system design, questions on sorting algorithms are prevalent in technical interviews of companies like Google, Amazon, Microsoft, and Facebook.
+
+It is vital to know how these sorting algorithms work internally. Having in-depth knowledge of sorting algorithms will help you to become a great software developer.
+
+Merge sort is one of the most efficient sorting algorithms. Today in this article, we will discuss the merge sort for linked list with its implementation. But before diving into the concepts of merge sort, let’s understand the basics first.
+
+What is Merge Sort?
+Merge sort is a divide and conquer algorithm. It divides the list repeatedly into smaller sublists until each sublist contains a single element and merges back these sublists in such a manner that results in a sorted list.
+
+Now the question is, why does it even work? What is its fundamental working principle of merge sort?
+
+The fundamental working principle of merge sort is that a list of size one is always sorted! Meaning, if we consider that we are having only a single element in the list, then the list is sorted, and while merging back, the idea is to merge two sublists that are sorted. So at the core, this problem is broken down into merging two sorted lists into a third one which is a famous and a standard question!
+
+Recommended: Please solve it on CodeStudio first before moving on to the solution.
+
+Algorithm
+Merge sort is easy to implement, but you should have a sound knowledge of recursion. Recursion is very important to implement the merge sort for linked lists. As mentioned earlier in the definition, the merge sort has two main parts: the first is to break down the list into smaller parts, effectively called smaller sublists, and the second one is to merge the sublists, assumed to be sorted(we know the assumption is true as The Principle of Mathematical Induction, PMI comes to rescue. 
+
+Read the blog on Recursion and Backtracking Algorithm With Practice Problem to learn more) to get the final sorted linked list. So we will create two functions. The first function will recursively divide the linked list into smaller sublists, and another function will merge it back, effectively merging the two sorted lists.
+
+mergeSort()
+ 
+1)If the list contains only one node, return the head of the list.
+
+2)Else, divide the list into two sublists. For this, we will take call middle() in which we will take two pointers
+ 
+'MID' and 'TAIL' which will initially point to the head node. We will change 'MID' and 'TAIL' as follows until 'TAIL' becomes NULL:
+'MID' = 'MID' -> next
+'TAIL' = 'TAIL' -> next -> next.
+
+3)After getting mid we wiil make next node of mid to NULL to break connection between two list
+ 
+4)Sort the two sublists using mergeSort()
+mergeSort(head)
+mergeSort(mid)
+
+5)Merge the two sublists by calling mergeSortedList().
+
+Algorithm for mergeSortedList()
+
+mergeSortedList()
+ 
+If head of any linked list is null then return the head of other linked list
+else compare the head of both linked list whichever is minimum make it the new head and initialize the variable tail to keep track of tail of linked list.
+Traverse both the linked lists simultaneously.
+Compare the elements of first linked list with second and add smaller one after the tail and update the tail.
+If any of the list reaches end then make the tail to point at the non null linked list and return the newhead
+Merge sort for Linked List
+
+Code:
+
+//merge sort for linked list
+#include<iostream>
+using namespace std;
+
+// Link list node 
+class Node {
+public:
+    int data;
+    Node* next;
+};
+
+
+//Function to merge two sorted linked list
+Node* mergeSortedList(Node* head1, Node* head2)
+{
+    Node* newHead = NULL;
+    Node *tail=NULL;
+    
+ 
+    // Pick either head1 or head2 to make new head 
+    if (head1->data <= head2->data) {
+        newHead = head1;
+        head1=head1->next;
+    }
+    else {
+        newHead = head2;
+        head2=head2->next;
+    }
+    tail=newHead;
+    
+    while(head1!=NULL && head2!=NULL)
+    {
+        if (head1->data <= head2->data) {
+        tail->next = head1;
+        head1=head1->next;
+    }
+    else {
+        tail->next = head2;
+        head2=head2->next;
+    }
+    
+    tail=tail->next;
+
+    }
+
+    if(head1!=NULL)
+    {
+        tail->next=head1;
+    }
+    if(head2!=NULL)
+    {
+        tail->next=head2;
+    }
+
+    return newHead;
+}
+
+//function to calculate the mid of a linked list
+Node *middle(Node *head) {
+    Node *mid = head;
+    Node *tail = head->next;
+    
+    while(mid->next != NULL && (tail!=NULL && tail->next!=NULL)) {
+        mid = mid->next;
+        tail = tail->next->next;
+    }
+    return mid;
+}
+
+Node* mergeSort(Node* head)
+{
+    
+ 
+    //Base case:- if size of linked list is 0 or 1
+    if(head==NULL||head->next==NULL)
+    {
+        return head;
+    }
+
+    //Creating node to store mid of linked list
+    Node* mid=new Node();
+    
+    mid=middle(head);
+
+    Node* head2=mid->next;
+
+    mid->next=NULL;
+
+    Node *newHead = mergeSortedList(mergeSort(head),mergeSort(head2));
+
+    return newHead;
+
+}
+
+// Function to insert a node at the beginning of the linked list 
+void push(Node** head_ref,int newdata)
+{
+    //allocate memoray for new node
+    Node* newNode=new Node();
+    
+    //put the data in new node
+    newNode->data=newdata;
+
+    //link the list to the new node
+    newNode->next=(*head_ref);
+
+    //update the head
+    (*head_ref)=newNode;
+}
+
+void printList(Node* node)
+{
+    while (node != NULL) {
+        cout << node->data << " ";
+        node = node->next;
+    }
+    cout<<endl;
+}
+
+int main()
+{
+    Node* head=NULL;
+
+    //creating a unsorted list
+    //to test out the function
+    //list: 40->25->2->10->7->1
+    push(&head, 1);
+    push(&head, 7);
+    push(&head, 10);
+    push(&head, 2);
+    push(&head, 25);
+    push(&head, 40);
+    
+    cout<<"Linked list before sorting: "<<endl; 
+    printList(head);
+
+
+    Node* newHead=mergeSort(head);
+
+    cout<<"Linked list after sorting: "<<endl; 
+    printList(newHead);
+}
